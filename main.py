@@ -1,4 +1,4 @@
-from modele.connectToBdd import  *
+from modele.modele import  *
 from views.view import  *
 from controllers.controller import  *
 
