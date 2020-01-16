@@ -43,9 +43,10 @@ class ConnectToBdd:
       emira=self.curseur.fetchone()
       self.curseur.close()
       return emira[0]
+   """ creation count """
    def creation_count(self,name,firstname,pseudo,email,age,password):
       self.curseur=self.con.cursor()
-      self.curseur.execute("INSERT INTO users(name,firstname,email,age,password) VALUES(%s,%s,%s,%s,%s);",(name,firstname,pseudo,age,password))
+      self.curseur.execute("INSERT INTO users(name,firstname,pseudo,email,age,password) VALUES(%s,%s,%s,%s,%s,%s);",(name,firstname,pseudo,email,age,password))
       self.con.commit()
       self.curseur.close()
 

@@ -34,8 +34,17 @@ class View:
             print(View.UNDERLINE+ "----------------------------------------------------------------------------------------" )
     """ create new count """
     def creation_new_user(self):
-        #name,firstname,pseudo,email,age,password
-        pass
+        print("bienvenue entrez les champs ci-dessous")
+        name=input("name: ")
+        firstname=input("firstname: ")
+        pseudo=input("pseudo: ")
+        email=input("email: ")
+        age=input("age: ")
+        password=input("password: ")
+        try:
+            self.model.creation_count(name,firstname,pseudo,email,age,password)
+        except(Exception ,psycopg2.Error):
+            print("erreur while connecting to postgresSQL")
 
 
 
