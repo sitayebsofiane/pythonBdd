@@ -16,33 +16,28 @@ class ConnectToBdd:
 
    
    """ methodes  to select all of data from messages """
+
    def all_messages(self):
       self.curseur=self.con.cursor()
-      self.curseur.execute("select u.name,u.firstname,m.contenu,m.date_publication from users as u join messages as m on u.id=m.id_auteur;")
-      rows=self.curseur.fetchall()
-      self.curseur.close()
-      return rows
-
-   """ methodes to select message depending user """
-   def one_message(self,author):
-      self.curseur=self.con.cursor()
-      self.curseur.execute("SELECT * FROM messages WHERE auteur='"+author+"';")
+      self.curseur.execute("SELECT u.name,u.firstname,m.contenu,m.date_publication FROM users AS u JOIN messages AS m ON u.id=m.id_auteur;")
       rows=self.curseur.fetchall()
       self.curseur.close()
       return rows
 
    """ methodes to insert message depending user """
-   def insert_message(self,contenu,email,password):
+
+   def insert_message(self,contenu,email):
       self.curseur=self.con.cursor()
       from datetime import date
       today = date.today()
-      self.curseur.execute("SELECT id FROM users where email='"+email+"' and password="+"'"+password+"';")
+      self.curseur.execute("SELECT id FROM users WHERE email="+"'"+email+"';")
       id_auteur=self.curseur.fetchone()[0]
       self.curseur.execute("INSERT INTO messages(contenu,date_publication,id_auteur) VALUES(%s,%s,%s);",(contenu,today,id_auteur))
       self.con.commit()
       self.curseur.close()
       
    """ authentification of user """
+
    def authentification(self,email,password):
       emira=False
       decrypted=""
@@ -63,13 +58,14 @@ class ConnectToBdd:
       for row in rows:
          f = Fernet(key)
          decrypted = f.decrypt(row[1].encode())
-         if row[0]==email and row[1]==decrypted.decode("utf-8"):
+         if row[0]==email and decrypted.decode("utf-8")==password:
             emira=True
             break
       self.curseur.close()
       return emira
 
-   """ creation count """
+   """ create count """
+
    def creation_count(self,name,firstname,pseudo,email,age,password):
       password_provided = "password" # This is input in the form of a string
       pwc = password_provided.encode() # Convert to type bytes
@@ -85,11 +81,8 @@ class ConnectToBdd:
       password = password.encode()
       f = Fernet(key)
       encrypted = f.encrypt(password)
-      password=encrypted.decode("utf-8")
-      #print(save)
-      #decrypted = f.decrypt(save.encode())
-     #print(decrypted.decode("utf-8") )
-      self.curseur=self.con.cursor()
+      password = encrypted.decode("utf-8")
+      self.curseur = self.con.cursor()
       self.curseur.execute("INSERT INTO users(name,firstname,pseudo,email,age,password) VALUES(%s,%s,%s,%s,%s,%s);",(name,firstname,pseudo,email,age,password))
       self.con.commit()
       self.curseur.close()

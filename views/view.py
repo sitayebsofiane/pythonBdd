@@ -21,13 +21,13 @@ class View:
     """ option post """
     def post_message_view(self,email,password):
         if self.model.authentification(email,password):
-            self.model.insert_message(input("what is in your mind: "),email,password)
+            self.model.insert_message(input("what is in your mind: "),email)
         else:
-            print("ton emira n'est pas valide il faut creer un compte pour pouvoir poster message")
+            print("votre compte n'exsite pas il faut creer un compte pour pouvoir poster message")
     
     """ option get """
     def get_message_view(self):
-        print("salam alikoum voici la liste: ")
+        print(" voici la liste des post et de leurs auteur: ")
         for r in self.model.all_messages():
             print(View.OKGREEN + "-----------------------------------------------------------------------------------------" )
             print(f"nom: {r[0]} | prenom: {r[1]} | contenu: {r[2]} | date: {r[3]}")
