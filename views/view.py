@@ -32,6 +32,7 @@ class View:
             print(View.OKGREEN + "-----------------------------------------------------------------------------------------" )
             print(f"nom: {r[0]} | prenom: {r[1]} | contenu: {r[2]} | date: {r[3]}")
             print(View.UNDERLINE+ "----------------------------------------------------------------------------------------" )
+    """ create new count """
     def creation_new_user(self):
         #name,firstname,pseudo,email,age,password
         pass
