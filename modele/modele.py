@@ -1,4 +1,10 @@
 import psycopg2
+import base64
+import os
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.fernet import Fernet
 class ConnectToBdd:
 
    def __init__(self,bdd="ecole",user="postgres",password="as122014",host="localhost",port="5432"):
@@ -38,13 +44,51 @@ class ConnectToBdd:
       
    """ authentification of user """
    def authentification(self,email,password):
+      emira=False
+      decrypted=""
+      password_provided = "password" # This is input in the form of a string
+      pwc = password_provided.encode() # Convert to type bytes
+      salt = b'salt_' # CHANGE THIS - recommend using a key from os.urandom(16), must be of type bytes
+      kdf = PBKDF2HMAC(
+         algorithm=hashes.SHA256(),
+         length=32,
+         salt=salt,
+         iterations=100000,
+         backend=default_backend()
+      )
+      key = base64.urlsafe_b64encode(kdf.derive(pwc)) # Can only use kdf once
       self.curseur=self.con.cursor()
-      self.curseur.execute("select emira(%s,%s)",(email,password))
-      emira=self.curseur.fetchone()
+      self.curseur.execute("select email,password from users")
+      rows=self.curseur.fetchall()
+      for row in rows:
+         f = Fernet(key)
+         decrypted = f.decrypt(row[1].encode())
+         if row[0]==email and row[1]==decrypted.decode("utf-8"):
+            emira=True
+            break
       self.curseur.close()
-      return emira[0]
+      return emira
+
    """ creation count """
    def creation_count(self,name,firstname,pseudo,email,age,password):
+      password_provided = "password" # This is input in the form of a string
+      pwc = password_provided.encode() # Convert to type bytes
+      salt = b'salt_' # CHANGE THIS - recommend using a key from os.urandom(16), must be of type bytes
+      kdf = PBKDF2HMAC(
+         algorithm=hashes.SHA256(),
+         length=32,
+         salt=salt,
+         iterations=100000,
+         backend=default_backend()
+      )
+      key = base64.urlsafe_b64encode(kdf.derive(pwc)) # Can only use kdf once
+      password = password.encode()
+      f = Fernet(key)
+      encrypted = f.encrypt(password)
+      password=encrypted.decode("utf-8")
+      #print(save)
+      #decrypted = f.decrypt(save.encode())
+     #print(decrypted.decode("utf-8") )
       self.curseur=self.con.cursor()
       self.curseur.execute("INSERT INTO users(name,firstname,pseudo,email,age,password) VALUES(%s,%s,%s,%s,%s,%s);",(name,firstname,pseudo,email,age,password))
       self.con.commit()
