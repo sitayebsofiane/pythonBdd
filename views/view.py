@@ -29,9 +29,9 @@ class View:
     def get_message_view(self):
         print(" voici la liste des post et de leurs auteur: ")
         for r in self.model.all_messages():
-            print(View.OKGREEN + "-----------------------------------------------------------------------------------------" )
+            print(View.HEADER + "-----------------------------------------------------------------------------------------" )
             print(f"nom: {r[0]} | prenom: {r[1]} | contenu: {r[2]} | date: {r[3]}")
-            print(View.UNDERLINE+ "----------------------------------------------------------------------------------------" )
+            print(View.BOLD+ "----------------------------------------------------------------------------------------" )
     """ create new count """
     def creation_new_user(self):
         print("bienvenue entrez les champs ci-dessous")
