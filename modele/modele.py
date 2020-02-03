@@ -30,7 +30,7 @@ class ConnectToBdd:
       self.curseur=self.con.cursor()
       from datetime import date
       today = date.today()
-      self.curseur.execute("SELECT id FROM users WHERE email="+"'"+email+"';")
+      self.curseur.execute("SELECT id FROM users WHERE email=%s;",(email,))
       id_auteur=self.curseur.fetchone()[0]
       self.curseur.execute("INSERT INTO messages(contenu,date_publication,id_auteur) VALUES(%s,%s,%s);",(contenu,today,id_auteur))
       self.con.commit()
